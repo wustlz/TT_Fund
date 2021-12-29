@@ -5,11 +5,14 @@ import re
 import datetime
 from tt_fund.settings import str_now_day
 from tt_fund.settings import save_item_in_csv
+from tt_fund.settings import file_path
 
 """
 各爬虫说明详见github项目 https://github.com/CBJerry993/tt_fund
 """
 
+file_name_beixiang = file_path + "beixiang_10stock/beixiang_10stock_{}.csv"
+file_name_nanxiang = file_path + "beixiang_10stock/nanxiang_10stock_{}.csv"
 
 # 获取时间的列表。默认从20200101到今天，可修改。
 def get_time(start_time="2020-01-01", end_time=str(datetime.datetime.now().date())):
@@ -72,7 +75,7 @@ class Beixiang10stockSpider(scrapy.Spider):
                 item["out"] = round(i.get("HGTMCJE") / 10 ** 8, 2)
                 item["total"] = round(i.get("HGTCJJE") / 10 ** 8, 2)
                 print("沪股通十大成交股:", item)
-                save_item_in_csv(item, "beixiang_10stock_{}.csv".format(str_now_day), self.title_num_1)
+                save_item_in_csv(item, file_name_beixiang.format(str_now_day), self.title_num_1)
                 self.title_num_1 = 1
 
         # 深股通十大成交股
@@ -88,7 +91,7 @@ class Beixiang10stockSpider(scrapy.Spider):
                 item["out"] = round(i.get("SGTMCJE") / 10 ** 8, 2)
                 item["total"] = round(i.get("SGTCJJE") / 10 ** 8, 2)
                 print("深股通十大成交股:", item)
-                save_item_in_csv(item, "beixiang_10stock_{}.csv".format(str_now_day), self.title_num_1)
+                save_item_in_csv(item, file_name_beixiang.format(str_now_day), self.title_num_1)
                 self.title_num_1 = 1
 
         # 港股通（沪）十大成交股
@@ -104,7 +107,7 @@ class Beixiang10stockSpider(scrapy.Spider):
                 item["out"] = round(i.get("GGTHMCJE") / 10 ** 8, 2)
                 item["total"] = round(i.get("GGTHCJJE") / 10 ** 8, 2)
                 print("港股通（沪）十大成交股:", item)
-                save_item_in_csv(item, "nanxiang_10stock_{}.csv".format(str_now_day), self.title_num_2)
+                save_item_in_csv(item, file_name_nanxiang.format(str_now_day), self.title_num_2)
                 self.title_num_2 = 1
 
         # 港股通（深）十大成交股
@@ -120,5 +123,5 @@ class Beixiang10stockSpider(scrapy.Spider):
                 item["out"] = round(i.get("GGTSMCJE") / 10 ** 8, 2)
                 item["total"] = round(i.get("GGTSCJJE") / 10 ** 8, 2)
                 print("港股通（深）十大成交股:", item)
-                save_item_in_csv(item, "nanxiang_10stock_{}.csv".format(str_now_day), self.title_num_2)
+                save_item_in_csv(item, file_name_nanxiang.format(str_now_day), self.title_num_2)
                 self.title_num_2 = 1

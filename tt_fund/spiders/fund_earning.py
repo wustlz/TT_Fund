@@ -5,11 +5,14 @@ import json
 from lxml import etree
 from tt_fund.settings import str_now_day
 from tt_fund.settings import save_item_in_csv
+from tt_fund.settings import file_path
 from copyheaders import headers_raw_to_dict
 
 """
 各爬虫说明详见github项目 https://github.com/CBJerry993/tt_fund
 """
+
+file_name_prefix = file_path + "fund_earning/"
 
 
 class FundEarningSpider(scrapy.Spider):
@@ -63,7 +66,7 @@ class FundEarningSpider(scrapy.Spider):
                     "rate_recent_2year": f[12], "rate_recent_3year": f[13], "rate_from_this_year": f[14],
                     "rate_from_begin": f[15], "rate_buy": f[20]}
             item["url"] = "http://fund.eastmoney.com/" + item["code"] + ".html"
-            print(item), save_item_in_csv(item, "fund_earning_list_{}.csv".format(str_now_day), self.title_num_1)
+            print(item), save_item_in_csv(item, file_name_prefix + "fund_earning_list_{}.csv".format(str_now_day), self.title_num_1)
             self.title_num_1 = 1
 
             # 2.1基金成立以来每日净值
@@ -107,7 +110,7 @@ class FundEarningSpider(scrapy.Spider):
                     "total_day": data.get("TotalCount"), "net_value": i.get("DWJZ"),
                     "accumulative_value": i.get("LJJZ"), "rate_day": i.get("JZZZL"), "buy_status": i.get("SGZT"),
                     "sell_status": i.get("SHZT"), "profit": i.get("FHSP")}
-            print(item), save_item_in_csv(item, "fund_earning_perday_{}.csv".format(str_now_day), self.title_num_2_1)
+            print(item), save_item_in_csv(item, file_name_prefix + "fund_earning_perday_{}.csv".format(str_now_day), self.title_num_2_1)
             self.title_num_2_1 = 1
 
     # 2.2基金基本信息
@@ -139,7 +142,7 @@ class FundEarningSpider(scrapy.Spider):
             item[i_name] = item[i_name][0] if len(item[i_name]) > 0 else None
         for i in ["company_url", "bank_url", "manager_url"]:
             item[i] = "http:" + item[i]
-        print(item), save_item_in_csv(item, "fund_basic_info_{}.csv".format(str_now_day), self.title_num_2_2)
+        print(item), save_item_in_csv(item, file_name_prefix + "fund_basic_info_{}.csv".format(str_now_day), self.title_num_2_2)
         self.title_num_2_2 = 1
 
     # 2.3基金10大持仓股(指定按年)
@@ -166,5 +169,5 @@ class FundEarningSpider(scrapy.Spider):
                         "stock_value": tr.xpath("./td[last()]/text()")}  # 持仓市值，万元
                 for i_name in ["stock_name", "stock_proportion", "stock_amount", "stock_value"]:
                     item[i_name] = item[i_name][0] if len(item[i_name]) > 0 else None
-                print(item), save_item_in_csv(item, "fund_stock10_{}.csv".format(str_now_day), self.title_num_2_3)
+                print(item), save_item_in_csv(item, file_name_prefix + "fund_stock10_{}.csv".format(str_now_day), self.title_num_2_3)
                 self.title_num_2_3 = 1

@@ -13,6 +13,8 @@ NEWSPIDER_MODULE = 'tt_fund.spiders'
 # 当前日期 20200101
 str_now_day = time.strftime("%Y-%m-%d", time.localtime(time.time())).replace('-', '')
 
+# 存放文件路徑
+file_path = 'F:/pywork/TT_Fund/tt_fund/data_temp/'
 
 # 存csv
 def save_item_in_csv(item, file_name, titleNum=0):

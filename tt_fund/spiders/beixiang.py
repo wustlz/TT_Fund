@@ -5,6 +5,7 @@ import re
 import requests
 from tt_fund.settings import str_now_day
 from tt_fund.settings import save_item_in_csv
+from tt_fund.settings import file_path
 
 """
 各爬虫说明详见github项目 https://github.com/CBJerry993/tt_fund
@@ -65,5 +66,5 @@ class BeixiangSpider(scrapy.Spider):
             item["sz_index"] = i.get("SSEChange")
             item["sz_index_percent"] = round(i.get("SSEChangePrecent") * 100, 2)
             print(item)
-            save_item_in_csv(item, "beixiang_{}.csv".format(str_now_day), self.title_num)
+            save_item_in_csv(item, file_path + "/beixiang/beixiang_{}.csv".format(str_now_day), self.title_num)
             self.title_num = 1

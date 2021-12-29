@@ -4,10 +4,13 @@ import re
 from lxml import etree
 from tt_fund.settings import str_now_day
 from tt_fund.settings import save_item_in_csv
+from tt_fund.settings import file_path
 
 """
 各爬虫说明详见github项目 https://github.com/CBJerry993/tt_fund
 """
+
+file_name_prefix = file_path + "fund_company/"
 
 
 class FundCompanySpider(scrapy.Spider):
@@ -105,7 +108,7 @@ class FundCompanySpider(scrapy.Spider):
         for i_name in ['company_name', 'position', 'general_manager', 'website_url', 'tell',
                        'manager_total_asset', 'fund_amount', 'manager_amount', 'publish_date']:
             item[i_name] = item[i_name][0] if len(item[i_name]) > 0 else None
-        print(item), save_item_in_csv(item, "company_info_{}.csv".format(str_now_day), self.title_num_2_1)
+        print(item), save_item_in_csv(item, file_name_prefix + "company_info_{}.csv".format(str_now_day), self.title_num_2_1)
         self.title_num_2_1 = 1
 
     # 2.2基金公司股票型和混合型规模、数量、经理数量排名
@@ -130,7 +133,7 @@ class FundCompanySpider(scrapy.Spider):
                        'fund_amount_mean', 'fund_amount_rank', 'fund_manager_amount', 'fund_manager_amount_mean',
                        'fund_manager_amount_rank']:
             item[i_name] = item[i_name][0] if len(item[i_name]) > 0 else None
-        print(item), save_item_in_csv(item, "company_fundscale_{}.csv".format(str_now_day), self.title_num_2_2)
+        print(item), save_item_in_csv(item, file_name_prefix + "company_fundscale_{}.csv".format(str_now_day), self.title_num_2_2)
         self.title_num_2_2 = 1
 
     # 2.3基金公司下的基金清单
@@ -147,7 +150,7 @@ class FundCompanySpider(scrapy.Spider):
                     "fund_code": tr.xpath("./td/a[2]/text()")}
             item["fund_name"] = item["fund_name"][0] if len(item["fund_name"]) > 0 else None
             item["fund_code"] = "\t" + tr.xpath("./td/a[2]/text()")[0] if len(item["fund_code"]) > 0 else None
-            print(item), save_item_in_csv(item, "company_fund_list_{}.csv".format(str_now_day), self.title_num_2_3)
+            print(item), save_item_in_csv(item, file_name_prefix + "company_fund_list_{}.csv".format(str_now_day), self.title_num_2_3)
             self.title_num_2_3 = 1
 
     # 2.4公司的10大持仓股票
@@ -168,7 +171,7 @@ class FundCompanySpider(scrapy.Spider):
             item["hold_in_value_percent"] = tr.xpath("./td[6]/text()")[0]  # 占总净值比例
             item["stock_amount"] = tr.xpath("./td[7]/text()")[0]  # 持股数(万股)
             item["stock_value"] = tr.xpath("./td[8]/text()")[0]  # 持仓市值(万元)
-            print(item), save_item_in_csv(item, "company_10stock_{}.csv".format(str_now_day), self.title_num_2_4)
+            print(item), save_item_in_csv(item, file_name_prefix + "company_10stock_{}.csv".format(str_now_day), self.title_num_2_4)
             self.title_num_2_4 = 1
 
     # 2.5公司下的行业配置
@@ -185,6 +188,6 @@ class FundCompanySpider(scrapy.Spider):
                     "havein_mycomanpy_fund": tr.xpath("./td[4]/a/text()")[0],
                     "hold_in_value_percent": tr.xpath("./td[5]/text()")[0],
                     "stock_value": tr.xpath("./td[6]/text()")[0]}
-            print(item), save_item_in_csv(item, "company_industry_category_{}.csv".format(str_now_day),
+            print(item), save_item_in_csv(item, file_name_prefix + "company_industry_category_{}.csv".format(str_now_day),
                                           self.title_num_2_5)
             self.title_num_2_5 = 1
